@@ -1,12 +1,12 @@
-require 'test/unit'
-require 'rubypants'
+require 'minitest/autorun'
+require_relative '../lib/rubypants'
 
 # Test EVERYTHING against SmartyPants.pl output!
 
 
-class TestRubyPants < Test::Unit::TestCase
-  def assert_rp_equal(str, orig, options=[2])
-    assert_equal orig, RubyPants.new(str, options).to_html
+class RubyPantsTest < MiniTest::Unit::TestCase
+  def assert_rp_equal(str, orig, options=[2], entities = {})
+    assert_equal orig, RubyPants.new(str, options, entities).to_html
   end
 
   def assert_verbatim(str)
@@ -158,5 +158,13 @@ EOF
     assert_rp_equal %q{foo\#bar}, "foo\\#bar"
     assert_rp_equal %q{foo\*bar}, "foo\\*bar"
     assert_rp_equal %q{foo\&bar}, "foo\\&bar"
+  end
+
+  def test_modified_entities
+    entities = {
+      :single_left_quote  => 'SHAZAM',
+      :single_right_quote => 'POWZAP'
+    }
+    assert_rp_equal "Testing 'FOO!'", "Testing SHAZAMFOO!POWZAP", [2], entities
   end
 end
