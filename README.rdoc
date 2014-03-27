@@ -1,4 +1,4 @@
-= RubyPants -- SmartyPants ported to Ruby
+= RubyPants: SmartyPants for Ruby
 
 == Synopsis
 
