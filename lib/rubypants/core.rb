@@ -1,4 +1,5 @@
 class RubyPants < String
+
   # Create a new RubyPants instance with the text in +string+.
   #
   # Allowed elements in the options array:
@@ -23,6 +24,19 @@ class RubyPants < String
   #                            <tt>"</tt>
   # <tt>:stupefy</tt>       :: translate RubyPants HTML entities
   #                            to their ASCII counterparts.
+  #
+  # In addition, you can customize the HTML entities that will be injected by
+  # passing in a hash for the final argument.  The defaults for these entities
+  # are as follows:
+  #
+  # <tt>:single_left_quote</tt>  :: <tt>&#8216;</tt>
+  # <tt>:double_left_quote</tt>  :: <tt>&#8220;</tt>
+  # <tt>:single_right_quote</tt> :: <tt>&#8217;</tt>
+  # <tt>:double_right_quote</tt> :: <tt>&#8221;</tt>
+  # <tt>:em_dash</tt>            :: <tt>&#8212;</tt>
+  # <tt>:en_dash</tt>            :: <tt>&#8211;</tt>
+  # <tt>:ellipsis</tt>           :: <tt>&#8230;</tt>
+  # <tt>:html_quote</tt>         :: <tt>&quot; </tt>
   #
   def initialize(string, options=[2], entities = {})
     super string

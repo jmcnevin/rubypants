@@ -1,6 +1,17 @@
-== Copyright and License
+= Copyright and License
 
-=== SmartyPants license:
+== Copyright
+
+Ported by Christian Neukirchen <mailto:chneukirchen@gmail.com>
+Copyright (C) 2004 Christian Neukirchen
+
+Incorporates ideas, comments and documentation by Chad Miller
+Copyright (C) 2004 Chad Miller
+
+Original SmartyPants by John Gruber
+Copyright (C) 2003 John Gruber
+
+== SmartyPants license:
 
 Copyright (c) 2003 John Gruber
 (http://daringfireball.net)

@@ -1,15 +1,5 @@
 = RubyPants -- SmartyPants ported to Ruby
 
-Ported by Christian Neukirchen <mailto:chneukirchen@gmail.com>
-  Copyright (C) 2004 Christian Neukirchen
-
-Incorporates ideas, comments and documentation by Chad Miller
-  Copyright (C) 2004 Chad Miller
-
-Original SmartyPants by John Gruber
-  Copyright (C) 2003 John Gruber
-
-
 == Synopsis
 
 RubyPants is a Ruby port of the smart-quotes library SmartyPants.
@@ -45,6 +35,23 @@ display text where smart quotes and other "smart punctuation" would
 not be appropriate, such as source code or example markup.
 
 
+== Installation
+
+  gem install rubypants
+
+Or, in your application's Gemfile:
+
+  gem 'rubypants'
+
+
+== Example of Usage
+
+  RubyPants.new("String with 'dumb' quotes.").to_html
+
+For additional options, consult the documention in
+<tt>lib/rubypants/core.rb</tt>.
+
+
 == Backslash Escapes
 
 If you need to use literal straight quotes (or plain hyphens and
@@ -77,8 +84,8 @@ it's best to use the proper HTML entity for closing single-quotes
 
 == Bugs
 
-To file bug reports or feature requests (except see above) please
-send email to: mailto:chneukirchen@gmail.com
+To file bug reports or feature requests, please create an issue in this gem's
+GitHub repository.
 
 If the bug involves quotes being curled the wrong way, please send
 example text to illustrate.
@@ -93,12 +100,13 @@ Chad Miller ported it to Python to use with Pyblosxom.
 Christian Neukirchen provided the Ruby port, as a general-purpose
 library that follows the *Cloth API.
 
+Jeremy McNevin posted this code to GitHub ages ago, but has recently
+been trying to improve it where possible.
+
 
 == Links
 
-John Gruber:: http://daringfireball.net
-SmartyPants:: http://daringfireball.net/projects/smartypants
-
-Chad Miller:: http://web.chad.org
-
-Christian Neukirchen:: http://kronavita.de/chris
+John Gruber :: http://daringfireball.net
+SmartyPants :: http://daringfireball.net/projects/smartypants
+Chad Miller :: http://web.chad.org
+Christian Neukirchen :: http://kronavita.de/chris
