@@ -25,4 +25,5 @@ entities.
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]
   s.homepage      = 'https://github.com/jmcnevin/rubypants'
+  s.license       = 'MIT'
 end
