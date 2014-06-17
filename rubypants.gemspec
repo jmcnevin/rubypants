@@ -26,4 +26,6 @@ entities.
   s.require_paths = ["lib"]
   s.homepage      = 'https://github.com/jmcnevin/rubypants'
   s.license       = 'MIT'
+
+  s.add_development_dependency('minitest')
 end

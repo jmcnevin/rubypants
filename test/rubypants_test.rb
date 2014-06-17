@@ -4,7 +4,7 @@ require_relative '../lib/rubypants'
 # Test EVERYTHING against SmartyPants.pl output!
 
 
-class RubyPantsTest < MiniTest::Unit::TestCase
+class RubyPantsTest < Minitest::Test
   def assert_rp_equal(str, orig, options=[2], entities = {})
     assert_equal orig, RubyPants.new(str, options, entities).to_html
   end
