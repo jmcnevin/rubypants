@@ -62,6 +62,9 @@ EOF
 
     assert_rp_equal '<b>"</b>', "<b>&#8220;</b>"
     assert_rp_equal 'foo<b>"</b>', "foo<b>&#8221;</b>"
+
+    assert_rp_equal "foo\u00a0\"bar\"", "foo\u00a0&#8220;bar&#8221;"
+    assert_rp_equal "foo\u00a0'bar'", "foo\u00a0&#8216;bar&#8217;"
   end
 
   def test_dashes

@@ -270,7 +270,7 @@ class RubyPants < String
     dec_dashes = "#{entity(:en_dash)}|#{entity(:em_dash)}"
 
     # Get most opening single quotes:
-    str.gsub!(/(\s|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)'(?=\w)/,
+    str.gsub!(/([[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)'(?=\w)/,
              '\1' + entity(:single_left_quote))
 
     # Single closing quotes:
@@ -284,7 +284,7 @@ class RubyPants < String
               entity(:single_left_quote))
 
     # Get most opening double quotes:
-    str.gsub!(/(\s|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)"(?=\w)/,
+    str.gsub!(/([[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)"(?=\w)/,
              '\1' + entity(:double_left_quote))
 
     # Double closing quotes:
