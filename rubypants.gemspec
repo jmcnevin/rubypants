@@ -18,7 +18,8 @@ entities.
                       "John Gruber",
                       "Chad Miller",
                       "Christian Neukirchen",
-                      "Jeremy McNevin"
+                      "Jeremy McNevin",
+                      "Aron Griffis"
                     ]
   s.email         = 'jeremy@spokoino.net'
   s.files         = `git ls-files`.split($/)

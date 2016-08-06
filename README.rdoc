@@ -103,6 +103,10 @@ library that follows the *Cloth API.
 Jeremy McNevin posted this code to GitHub ages ago, but has recently
 been trying to improve it where possible.
 
+Aron Griffis made jekyll-pants[https://github.com/scampersand/jekyll-pants]
+which depends on RubyPants, and consequently jumped in to help out with
+issues and pull requests.
+
 
 == Links
 
@@ -110,3 +114,4 @@ John Gruber :: http://daringfireball.net
 SmartyPants :: http://daringfireball.net/projects/smartypants
 Chad Miller :: http://web.chad.org
 Christian Neukirchen :: http://kronavita.de/chris
+Aron Griffis :: https://arongriffis.com
