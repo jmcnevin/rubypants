@@ -1,5 +1,7 @@
 = RubyPants: SmartyPants for Ruby
 
+{<img src="https://img.shields.io/gem/v/rubypants.png?style=plastic">}[https://rubygems.org/gems/rubypants]
+
 == Synopsis
 
 RubyPants is a Ruby port of the smart-quotes library SmartyPants.
