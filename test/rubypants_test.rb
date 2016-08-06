@@ -102,12 +102,18 @@ EOF
   def test_ellipses
     assert_rp_equal "foo..bar", 'foo..bar'
     assert_rp_equal "foo...bar", 'foo&#8230;bar'
-    assert_rp_equal "foo....bar", 'foo&#8230;.bar'
+    assert_rp_equal "foo....bar", 'foo....bar'
+
+    # dots and spaces
+    assert_rp_equal "foo. . .bar", 'foo&#8230;bar'
+    assert_rp_equal "foo . . . bar", 'foo &#8230; bar'
+    assert_rp_equal "foo. . . .bar", 'foo. . . .bar'
+    assert_rp_equal "foo . . . . bar", 'foo . . . . bar'
 
     # Nasty ones
-    assert_rp_equal "foo. . ..bar", 'foo&#8230;.bar'
+    assert_rp_equal "foo. . ..bar", 'foo. . ..bar'
     assert_rp_equal "foo. . ...bar", 'foo. . &#8230;bar'
-    assert_rp_equal "foo. . ....bar", 'foo. . &#8230;.bar'
+    assert_rp_equal "foo. . ....bar", 'foo. . ....bar'
   end
 
   def test_backticks

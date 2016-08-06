@@ -235,8 +235,8 @@ class RubyPants < String
   #
   def educate_ellipses(str)
     str.
-      gsub('...',   entity(:ellipsis)).
-      gsub('. . .', entity(:ellipsis))
+      gsub(RubyPants.n_of(3, '.'), entity(:ellipsis)).
+      gsub(/(?<!\.|\. )\. \. \.(?!\.| \.)/, entity(:ellipsis))
   end
 
   # Return the string, with "<tt>``backticks''</tt>"-style single quotes
