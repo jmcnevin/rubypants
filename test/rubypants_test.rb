@@ -69,23 +69,20 @@ EOF
 
   def test_dashes
     assert_rp_equal "foo--bar", 'foo&#8212;bar', 1
-    assert_rp_equal "foo---bar", 'foo&#8212;-bar', 1
-    assert_rp_equal "foo----bar", 'foo&#8212;&#8212;bar', 1
-    assert_rp_equal "foo-----bar", 'foo&#8212;&#8212;-bar', 1
+    assert_rp_equal "foo---bar", 'foo---bar', 1
+    assert_rp_equal "foo----bar", 'foo----bar', 1
     assert_rp_equal "--foo--bar--quux--",
                     '&#8212;foo&#8212;bar&#8212;quux&#8212;', 1
 
     assert_rp_equal "foo--bar", 'foo&#8211;bar', 2
     assert_rp_equal "foo---bar", 'foo&#8212;bar', 2
-    assert_rp_equal "foo----bar", 'foo&#8212;-bar', 2
-    assert_rp_equal "foo-----bar", 'foo&#8212;&#8211;bar', 2
+    assert_rp_equal "foo----bar", 'foo----bar', 2
     assert_rp_equal "--foo--bar--quux--",
                     '&#8211;foo&#8211;bar&#8211;quux&#8211;', 2
 
     assert_rp_equal "foo--bar", 'foo&#8212;bar', 3
     assert_rp_equal "foo---bar", 'foo&#8211;bar', 3
-    assert_rp_equal "foo----bar", 'foo&#8211;-bar', 3
-    assert_rp_equal "foo-----bar", 'foo&#8211;&#8212;bar', 3
+    assert_rp_equal "foo----bar", 'foo----bar', 3
     assert_rp_equal "--foo--bar--quux--",
                     '&#8212;foo&#8212;bar&#8212;quux&#8212;', 3
   end

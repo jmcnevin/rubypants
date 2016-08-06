@@ -184,12 +184,23 @@ class RubyPants < String
       gsub('\`',   '&#96;')
   end
 
+  def self.n_of(n, x)
+    x = Regexp.escape(x)
+    /(?<!#{x})   # not preceded by x
+     #{x}{#{n}}  # n of x
+     (?!#{x})    # not followed by x
+    /x
+  end
+
+  DOUBLE_DASH = n_of(2, '-')
+  TRIPLE_DASH = n_of(3, '-')
+
   # The string, with each instance of "<tt>--</tt>" translated to an
   # em-dash HTML entity.
   #
   def educate_dashes(str)
     str.
-      gsub(/--/, entity(:em_dash))
+      gsub(DOUBLE_DASH, entity(:em_dash))
   end
 
   # The string, with each instance of "<tt>--</tt>" translated to an
@@ -198,8 +209,8 @@ class RubyPants < String
   #
   def educate_dashes_oldschool(str)
     str.
-      gsub(/---/, entity(:em_dash)).
-      gsub(/--/,  entity(:en_dash))
+      gsub(TRIPLE_DASH, entity(:em_dash)).
+      gsub(DOUBLE_DASH, entity(:en_dash))
   end
 
   # Return the string, with each instance of "<tt>--</tt>" translated
@@ -214,8 +225,8 @@ class RubyPants < String
   #
   def educate_dashes_inverted(str)
     str.
-      gsub(/---/, entity(:en_dash)).
-      gsub(/--/,  entity(:em_dash))
+      gsub(TRIPLE_DASH, entity(:en_dash)).
+      gsub(DOUBLE_DASH, entity(:em_dash))
   end
 
   # Return the string, with each instance of "<tt>...</tt>" translated
