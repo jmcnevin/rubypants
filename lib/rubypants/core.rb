@@ -84,7 +84,7 @@ class RubyPants < String
     tokens = tokenize
 
     # Keep track of when we're inside <pre> or <code> tags.
-    in_pre = false
+    in_pre = nil
 
     # Here is the result stored in.
     result = ""
@@ -98,8 +98,14 @@ class RubyPants < String
     tokens.each do |token|
       if token.first == :tag
         result << token[1]
-        if token[1] =~ %r!<(/?)(?:pre|code|kbd|script|style|math)[\s>]!
-          in_pre = ($1 != "/")  # Opening or closing tag?
+        if token[1].end_with? '/>'
+          # ignore self-closing tags
+        elsif token[1] =~ %r!\A<(/?)(pre|code|kbd|script|style|math)[\s>]!
+          if $1 == '' && ! in_pre
+            in_pre = $2
+          elsif $1 == '/' && $2 == in_pre
+            in_pre = nil
+          end
         end
       else
         t = token[1]
