@@ -88,6 +88,11 @@ EOF
     assert_rp_equal "foo-----bar", 'foo&#8211;&#8212;bar', 3
     assert_rp_equal "--foo--bar--quux--",
                     '&#8212;foo&#8212;bar&#8212;quux&#8212;', 3
+
+    # mixed with HTML comments
+    assert_verbatim "<!-- comment -->"
+    assert_verbatim "<!-- <p>foo bar</p> -->"
+    assert_rp_equal "--<!-- -- -->--", '&#8211;<!-- -- -->&#8211;'
   end
 
   def test_ellipses
