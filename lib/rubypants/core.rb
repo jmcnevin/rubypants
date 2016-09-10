@@ -353,7 +353,7 @@ class RubyPants < String
   # Chad Miller in the Python port of SmartyPants.
   #
   def tokenize
-    tag_soup = /([^<]*)(<!--.*?-->|<[^>]*>)/
+    tag_soup = /([^<]*)(<!--.*?-->|<[^>]*>)/m
 
     tokens = []
 

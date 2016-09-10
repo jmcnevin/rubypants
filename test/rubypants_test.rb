@@ -90,6 +90,7 @@ EOF
   def test_html_comments
     assert_verbatim "<!-- comment -->"
     assert_verbatim "<!-- <p>foo bar</p> -->"
+    assert_verbatim "<!-- <p>foo\nbar</p> -->"
     assert_rp_equal "--<!-- -- -->--", '&#8211;<!-- -- -->&#8211;'
   end
 
