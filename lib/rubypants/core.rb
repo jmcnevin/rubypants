@@ -68,17 +68,18 @@ class RubyPants < String
       do_dashes = :inverted
     elsif @options.include?(-1)
       do_stupefy = true
-    else
-      do_quotes      = @options.include?(:quotes)
-      do_backticks   = @options.include?(:backticks)
-      do_backticks   = :both if @options.include?(:allbackticks)
-      do_dashes      = :normal if @options.include?(:dashes)
-      do_dashes      = :oldschool if @options.include?(:oldschool)
-      do_dashes      = :inverted if @options.include?(:inverted)
-      do_ellipses    = @options.include?(:ellipses)
-      convert_quotes = @options.include?(:convertquotes)
-      do_stupefy     = @options.include?(:stupefy)
     end
+
+    # Explicit flags override numeric flag groups.
+    do_quotes      = true if @options.include?(:quotes)
+    do_backticks   = true if @options.include?(:backticks)
+    do_backticks   = :both if @options.include?(:allbackticks)
+    do_dashes      = :normal if @options.include?(:dashes)
+    do_dashes      = :oldschool if @options.include?(:oldschool)
+    do_dashes      = :inverted if @options.include?(:inverted)
+    do_ellipses    = true if @options.include?(:ellipses)
+    convert_quotes = true if @options.include?(:convertquotes)
+    do_stupefy     = true if @options.include?(:stupefy)
 
     # Parse the HTML
     tokens = tokenize
