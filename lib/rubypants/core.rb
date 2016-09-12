@@ -48,7 +48,7 @@ class RubyPants < String
   # Apply SmartyPants transformations.
   def to_html
     do_quotes = do_backticks = do_dashes = do_ellipses = do_stupify = nil
-    convert_quotes = false
+    convert_quotes = prevent_breaks = nil
 
     if @options.include?(0)
       # Do nothing.
@@ -77,6 +77,7 @@ class RubyPants < String
     do_dashes      = :normal if @options.include?(:dashes)
     do_dashes      = :oldschool if @options.include?(:oldschool)
     do_dashes      = :inverted if @options.include?(:inverted)
+    prevent_breaks = true if @options.include?(:prevent_breaks)
     do_ellipses    = true if @options.include?(:ellipses)
     convert_quotes = true if @options.include?(:convertquotes)
     do_stupefy     = true if @options.include?(:stupefy)
@@ -120,9 +121,9 @@ class RubyPants < String
           t.gsub!(/&quot;/, '"')  if convert_quotes
 
           if do_dashes
-            t = educate_dashes t            if do_dashes == :normal
-            t = educate_dashes_oldschool t  if do_dashes == :oldschool
-            t = educate_dashes_inverted t   if do_dashes == :inverted
+            t = educate_dashes t, prevent_breaks            if do_dashes == :normal
+            t = educate_dashes_oldschool t, prevent_breaks  if do_dashes == :oldschool
+            t = educate_dashes_inverted t, prevent_breaks   if do_dashes == :inverted
           end
 
           t = educate_ellipses t  if do_ellipses
@@ -196,22 +197,38 @@ class RubyPants < String
   DOUBLE_DASH = n_of(2, '-')
   TRIPLE_DASH = n_of(3, '-')
 
-  # The string, with each instance of "<tt>--</tt>" translated to an
-  # em-dash HTML entity.
+  # Return +str+ replacing all +patt+ with +repl+. If +prevent_breaks+ is true,
+  # then replace spaces preceding +patt+ with a non-breaking space, and if there
+  # are no spaces, then insert a word-joiner.
   #
-  def educate_dashes(str)
-    str.
-      gsub(DOUBLE_DASH, entity(:em_dash))
+  def educate(str, patt, repl, prevent_breaks)
+    patt = /(?<spaces>[[:space:]]*)#{patt}/
+    str.gsub(patt) do
+      spaces = if prevent_breaks && $~['spaces'].length > 0
+                 entity(:non_breaking_space) # * $~['spaces'].length
+               elsif prevent_breaks
+                 entity(:word_joiner)
+               else
+                 $~['spaces']
+               end
+      spaces + repl
+    end
   end
 
-  # The string, with each instance of "<tt>--</tt>" translated to an
+  # Return the string, with each instance of "<tt>--</tt>" translated to an
+  # em-dash HTML entity.
+  #
+  def educate_dashes(str, prevent_breaks=false)
+    educate(str, DOUBLE_DASH, entity(:em_dash), prevent_breaks)
+  end
+
+  # Return the string, with each instance of "<tt>--</tt>" translated to an
   # en-dash HTML entity, and each "<tt>---</tt>" translated to an
   # em-dash HTML entity.
   #
-  def educate_dashes_oldschool(str)
-    str.
-      gsub(TRIPLE_DASH, entity(:em_dash)).
-      gsub(DOUBLE_DASH, entity(:en_dash))
+  def educate_dashes_oldschool(str, prevent_breaks=false)
+    str = educate(str, TRIPLE_DASH, entity(:em_dash), prevent_breaks)
+    educate(str, DOUBLE_DASH, entity(:en_dash), prevent_breaks)
   end
 
   # Return the string, with each instance of "<tt>--</tt>" translated
@@ -224,10 +241,9 @@ class RubyPants < String
   # sense that the shortcut should be shorter to type. (Thanks to
   # Aaron Swartz for the idea.)
   #
-  def educate_dashes_inverted(str)
-    str.
-      gsub(TRIPLE_DASH, entity(:en_dash)).
-      gsub(DOUBLE_DASH, entity(:em_dash))
+  def educate_dashes_inverted(str, prevent_breaks=false)
+    str = educate(str, TRIPLE_DASH, entity(:en_dash), prevent_breaks)
+    educate(str, DOUBLE_DASH, entity(:em_dash), prevent_breaks)
   end
 
   # Return the string, with each instance of "<tt>...</tt>" translated
@@ -382,7 +398,9 @@ class RubyPants < String
       :em_dash            => "&#8212;",
       :en_dash            => "&#8211;",
       :ellipsis           => "&#8230;",
-      :html_quote         => "&quot;"
+      :html_quote         => "&quot;",
+      :non_breaking_space => "&nbsp;",
+      :word_joiner        => "&#65279;",
     }
   end
 
