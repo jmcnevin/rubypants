@@ -126,7 +126,7 @@ class RubyPants < String
             t = educate_dashes_inverted t, prevent_breaks   if do_dashes == :inverted
           end
 
-          t = educate_ellipses t  if do_ellipses
+          t = educate_ellipses t, prevent_breaks  if do_ellipses
 
           # Note: backticks need to be processed before quotes.
           if do_backticks
@@ -250,10 +250,10 @@ class RubyPants < String
   # to an ellipsis HTML entity. Also converts the case where there are
   # spaces between the dots.
   #
-  def educate_ellipses(str)
-    str.
-      gsub(RubyPants.n_of(3, '.'), entity(:ellipsis)).
-      gsub(/(?<!\.|\. )\. \. \.(?!\.| \.)/, entity(:ellipsis))
+  def educate_ellipses(str, prevent_breaks=false)
+    str = educate(str, RubyPants.n_of(3, '.'), entity(:ellipsis), prevent_breaks)
+    educate(str, /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/,
+            entity(:ellipsis), prevent_breaks)
   end
 
   # Return the string, with "<tt>``backticks''</tt>"-style single quotes

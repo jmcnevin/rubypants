@@ -131,20 +131,33 @@ EOF
   end
 
   def test_ellipses
-    assert_rp_equal "foo..bar", 'foo..bar'
-    assert_rp_equal "foo...bar", 'foo&#8230;bar'
-    assert_rp_equal "foo....bar", 'foo....bar'
+    assert_rp_equal "foo..bar", 'foo..bar', [:ellipses]
+    assert_rp_equal "foo...bar", 'foo&#8230;bar', [:ellipses]
+    assert_rp_equal "foo....bar", 'foo....bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo..bar", 'foo..bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo...bar", 'foo&#65279;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo....bar", 'foo....bar', [:ellipses, :prevent_breaks]
 
     # dots and spaces
-    assert_rp_equal "foo. . .bar", 'foo&#8230;bar'
-    assert_rp_equal "foo . . . bar", 'foo &#8230; bar'
-    assert_rp_equal "foo. . . .bar", 'foo. . . .bar'
-    assert_rp_equal "foo . . . . bar", 'foo . . . . bar'
+    assert_rp_equal "foo. . .bar", 'foo&#8230;bar', [:ellipses]
+    assert_rp_equal "foo . . . bar", 'foo &#8230; bar', [:ellipses]
+    assert_rp_equal "foo. . . .bar", 'foo. . . .bar', [:ellipses]
+    assert_rp_equal "foo . . . . bar", 'foo . . . . bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo. . .bar", 'foo&#65279;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo . . . bar", 'foo&nbsp;&#8230; bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo. . . .bar", 'foo. . . .bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo . . . . bar", 'foo . . . . bar', [:ellipses, :prevent_breaks]
 
-    # Nasty ones
-    assert_rp_equal "foo. . ..bar", 'foo. . ..bar'
-    assert_rp_equal "foo. . ...bar", 'foo. . &#8230;bar'
-    assert_rp_equal "foo. . ....bar", 'foo. . ....bar'
+    # nasty ones
+    assert_rp_equal "foo. . ..bar", 'foo. . ..bar', [:ellipses]
+    assert_rp_equal "foo. . ...bar", 'foo. . &#8230;bar', [:ellipses]
+    assert_rp_equal "foo. . ....bar", 'foo. . ....bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo. . ..bar", 'foo. . ..bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo. . ...bar", 'foo. .&nbsp;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo. . ....bar", 'foo. . ....bar', [:ellipses, :prevent_breaks]
   end
 
   def test_backticks
