@@ -74,17 +74,47 @@ EOF
     assert_rp_equal "--foo--bar--quux--",
                     '&#8212;foo&#8212;bar&#8212;quux&#8212;', 1
 
+    assert_rp_equal "foo--bar", 'foo&#65279;&#8212;bar', [1, :prevent_breaks]
+    assert_rp_equal "foo --bar", 'foo &#8212;bar', 1
+    assert_rp_equal "foo --bar", 'foo&nbsp;&#8212;bar', [1, :prevent_breaks]
+    assert_rp_equal "foo -- bar", 'foo&nbsp;&#8212; bar', [1, :prevent_breaks]
+    assert_rp_equal "foo  --bar", 'foo&nbsp;&#8212;bar', [1, :prevent_breaks]
+
     assert_rp_equal "foo--bar", 'foo&#8211;bar', 2
     assert_rp_equal "foo---bar", 'foo&#8212;bar', 2
     assert_rp_equal "foo----bar", 'foo----bar', 2
     assert_rp_equal "--foo--bar--quux--",
                     '&#8211;foo&#8211;bar&#8211;quux&#8211;', 2
 
+    assert_rp_equal "foo--bar", 'foo&#65279;&#8211;bar', [2, :prevent_breaks]
+    assert_rp_equal "foo --bar", 'foo &#8211;bar', 2
+    assert_rp_equal "foo --bar", 'foo&nbsp;&#8211;bar', [2, :prevent_breaks]
+    assert_rp_equal "foo -- bar", 'foo&nbsp;&#8211; bar', [2, :prevent_breaks]
+    assert_rp_equal "foo  --bar", 'foo&nbsp;&#8211;bar', [2, :prevent_breaks]
+
+    assert_rp_equal "foo---bar", 'foo&#65279;&#8212;bar', [2, :prevent_breaks]
+    assert_rp_equal "foo ---bar", 'foo &#8212;bar', 2
+    assert_rp_equal "foo ---bar", 'foo&nbsp;&#8212;bar', [2, :prevent_breaks]
+    assert_rp_equal "foo --- bar", 'foo&nbsp;&#8212; bar', [2, :prevent_breaks]
+    assert_rp_equal "foo  ---bar", 'foo&nbsp;&#8212;bar', [2, :prevent_breaks]
+
     assert_rp_equal "foo--bar", 'foo&#8212;bar', 3
     assert_rp_equal "foo---bar", 'foo&#8211;bar', 3
     assert_rp_equal "foo----bar", 'foo----bar', 3
     assert_rp_equal "--foo--bar--quux--",
                     '&#8212;foo&#8212;bar&#8212;quux&#8212;', 3
+
+    assert_rp_equal "foo--bar", 'foo&#65279;&#8212;bar', [3, :prevent_breaks]
+    assert_rp_equal "foo --bar", 'foo &#8212;bar', 3
+    assert_rp_equal "foo --bar", 'foo&nbsp;&#8212;bar', [3, :prevent_breaks]
+    assert_rp_equal "foo -- bar", 'foo&nbsp;&#8212; bar', [3, :prevent_breaks]
+    assert_rp_equal "foo  --bar", 'foo&nbsp;&#8212;bar', [3, :prevent_breaks]
+
+    assert_rp_equal "foo---bar", 'foo&#65279;&#8211;bar', [3, :prevent_breaks]
+    assert_rp_equal "foo ---bar", 'foo &#8211;bar', 3
+    assert_rp_equal "foo ---bar", 'foo&nbsp;&#8211;bar', [3, :prevent_breaks]
+    assert_rp_equal "foo --- bar", 'foo&nbsp;&#8211; bar', [3, :prevent_breaks]
+    assert_rp_equal "foo  ---bar", 'foo&nbsp;&#8211;bar', [3, :prevent_breaks]
   end
 
   def test_html_comments
@@ -101,20 +131,33 @@ EOF
   end
 
   def test_ellipses
-    assert_rp_equal "foo..bar", 'foo..bar'
-    assert_rp_equal "foo...bar", 'foo&#8230;bar'
-    assert_rp_equal "foo....bar", 'foo....bar'
+    assert_rp_equal "foo..bar", 'foo..bar', [:ellipses]
+    assert_rp_equal "foo...bar", 'foo&#8230;bar', [:ellipses]
+    assert_rp_equal "foo....bar", 'foo....bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo..bar", 'foo..bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo...bar", 'foo&#65279;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo....bar", 'foo....bar', [:ellipses, :prevent_breaks]
 
     # dots and spaces
-    assert_rp_equal "foo. . .bar", 'foo&#8230;bar'
-    assert_rp_equal "foo . . . bar", 'foo &#8230; bar'
-    assert_rp_equal "foo. . . .bar", 'foo. . . .bar'
-    assert_rp_equal "foo . . . . bar", 'foo . . . . bar'
+    assert_rp_equal "foo. . .bar", 'foo&#8230;bar', [:ellipses]
+    assert_rp_equal "foo . . . bar", 'foo &#8230; bar', [:ellipses]
+    assert_rp_equal "foo. . . .bar", 'foo. . . .bar', [:ellipses]
+    assert_rp_equal "foo . . . . bar", 'foo . . . . bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo. . .bar", 'foo&#65279;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo . . . bar", 'foo&nbsp;&#8230; bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo. . . .bar", 'foo. . . .bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo . . . . bar", 'foo . . . . bar', [:ellipses, :prevent_breaks]
 
-    # Nasty ones
-    assert_rp_equal "foo. . ..bar", 'foo. . ..bar'
-    assert_rp_equal "foo. . ...bar", 'foo. . &#8230;bar'
-    assert_rp_equal "foo. . ....bar", 'foo. . ....bar'
+    # nasty ones
+    assert_rp_equal "foo. . ..bar", 'foo. . ..bar', [:ellipses]
+    assert_rp_equal "foo. . ...bar", 'foo. . &#8230;bar', [:ellipses]
+    assert_rp_equal "foo. . ....bar", 'foo. . ....bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo. . ..bar", 'foo. . ..bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo. . ...bar", 'foo. .&nbsp;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo. . ....bar", 'foo. . ....bar', [:ellipses, :prevent_breaks]
   end
 
   def test_backticks
