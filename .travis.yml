@@ -1,2 +1,11 @@
+rvm:
+  - 2.0
+  - 2.1
+  - 2.2
+  - 2.3
+  - jruby
+
+# for now just override the default `bundle exec rake` which fails because of an
+# unresolved superclass mismatch in `core.rb` vs. `version.rb`
 script:
-  - 'rake'
+  - rake
