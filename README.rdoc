@@ -2,6 +2,8 @@
 
 {<img src="https://img.shields.io/gem/v/rubypants.svg?style=plastic">}[https://rubygems.org/gems/rubypants]
 
+{<img src="https://travis-ci.org/jmcnevin/rubypants.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/jmcnevin/rubypants]
+
 == Synopsis
 
 RubyPants is a Ruby port of the smart-quotes library SmartyPants.
