@@ -1,3 +1,5 @@
+require_relative 'helper'
+
 require 'minitest/autorun'
 require_relative '../lib/rubypants'
 
