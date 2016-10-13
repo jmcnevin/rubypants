@@ -1,7 +1,8 @@
 = RubyPants: SmartyPants for Ruby
 
-{<img src="https://img.shields.io/gem/v/rubypants.svg?style=plastic">}[https://rubygems.org/gems/rubypants] 
-{<img src="https://img.shields.io/travis/jmcnevin/rubypants.svg?style=plastic" alt="Build Status" />}[https://travis-ci.org/jmcnevin/rubypants]
+{<img src="https://img.shields.io/gem/v/rubypants.svg?maxAge=2592000&style=plastic" alt="Gem">}[https://rubygems.org/gems/rubypants]
+{<img src="https://img.shields.io/travis/jmcnevin/rubypants.svg?maxAge=2592000&style=plastic" alt="Travis">}[https://travis-ci.org/jmcnevin/rubypants]
+{<img src="https://img.shields.io/codecov/c/github/jmcnevin/rubypants.svg?maxAge=2592000&style=plastic" alt="CodeCov">}[https://codecov.io/gh/jmcnevin/rubypants]
 
 == Synopsis
 
