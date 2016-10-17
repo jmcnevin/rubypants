@@ -36,7 +36,9 @@ class RubyPants < String
   # <tt>:em_dash</tt>            :: <tt>&#8212;</tt>
   # <tt>:en_dash</tt>            :: <tt>&#8211;</tt>
   # <tt>:ellipsis</tt>           :: <tt>&#8230;</tt>
-  # <tt>:html_quote</tt>         :: <tt>&quot; </tt>
+  # <tt>:html_quote</tt>         :: <tt>&quot;</tt>
+  # <tt>:non_breaking_space</tt> :: <tt>&nbsp;</tt>
+  # <tt>:word_joiner</tt>        :: <tt>&#8288;</tt>
   #
   def initialize(string, options=[2], entities = {})
     super string
@@ -400,7 +402,7 @@ class RubyPants < String
       :ellipsis           => "&#8230;",
       :html_quote         => "&quot;",
       :non_breaking_space => "&nbsp;",
-      :word_joiner        => "&#65279;",
+      :word_joiner        => "&#8288;",
     }
   end
 
