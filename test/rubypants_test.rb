@@ -231,4 +231,8 @@ EOF
     }
     assert_rp_equal "Testing 'FOO!'", "Testing SHAZAMFOO!POWZAP", [2], entities
   end
+
+  def test_named_entities
+    assert_rp_equal "Testing 'FOO!'", "Testing &lsquo;FOO!&rsquo;", [2, :named_entities]
+  end
 end

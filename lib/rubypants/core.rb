@@ -13,20 +13,24 @@ class RubyPants < String
   # If you don't like any of these defaults, you can pass symbols to change
   # RubyPants' behavior:
   #
-  # <tt>:quotes</tt>        :: quotes
-  # <tt>:backticks</tt>     :: backtick quotes (``double'' only)
-  # <tt>:allbackticks</tt>  :: backtick quotes (``double'' and `single')
-  # <tt>:dashes</tt>        :: dashes
-  # <tt>:oldschool</tt>     :: old school dashes
-  # <tt>:inverted</tt>      :: inverted old school dashes
-  # <tt>:ellipses</tt>      :: ellipses
-  # <tt>:convertquotes</tt> :: convert <tt>&quot;</tt> entities to
-  #                            <tt>"</tt>
-  # <tt>:stupefy</tt>       :: translate RubyPants HTML entities
-  #                            to their ASCII counterparts.
+  # <tt>:quotes</tt>         :: quotes
+  # <tt>:backticks</tt>      :: backtick quotes (``double'' only)
+  # <tt>:allbackticks</tt>   :: backtick quotes (``double'' and `single')
+  # <tt>:dashes</tt>         :: dashes
+  # <tt>:oldschool</tt>      :: old school dashes
+  # <tt>:inverted</tt>       :: inverted old school dashes
+  # <tt>:ellipses</tt>       :: ellipses
+  # <tt>:prevent_breaks</tt> :: use nbsp and word-joiner to avoid breaking
+  #                             before dashes and ellipses
+  # <tt>:named_entities</tt> :: used named entities instead of the default
+  #                             decimal entities (see below)
+  # <tt>:convertquotes</tt>  :: convert <tt>&quot;</tt> entities to
+  #                             <tt>"</tt>
+  # <tt>:stupefy</tt>        :: translate RubyPants HTML entities
+  #                             to their ASCII counterparts.
   #
   # In addition, you can customize the HTML entities that will be injected by
-  # passing in a hash for the final argument.  The defaults for these entities
+  # passing in a hash for the final argument. The defaults for these entities
   # are as follows:
   #
   # <tt>:single_left_quote</tt>  :: <tt>&#8216;</tt>
@@ -40,11 +44,27 @@ class RubyPants < String
   # <tt>:non_breaking_space</tt> :: <tt>&nbsp;</tt>
   # <tt>:word_joiner</tt>        :: <tt>&#8288;</tt>
   #
+  # If the <tt>:named_entities</tt> option is used, the default entities are
+  # as follows:
+  #
+  # <tt>:single_left_quote</tt>  :: <tt>&lsquo;</tt>
+  # <tt>:double_left_quote</tt>  :: <tt>&ldquo;</tt>
+  # <tt>:single_right_quote</tt> :: <tt>&rsquo;</tt>
+  # <tt>:double_right_quote</tt> :: <tt>&rdquo;</tt>
+  # <tt>:em_dash</tt>            :: <tt>&mdash;</tt>
+  # <tt>:en_dash</tt>            :: <tt>&ndash;</tt>
+  # <tt>:ellipsis</tt>           :: <tt>&hellip;</tt>
+  # <tt>:html_quote</tt>         :: <tt>&quot;</tt>
+  # <tt>:non_breaking_space</tt> :: <tt>&nbsp;</tt>
+  # <tt>:word_joiner</tt>        :: <tt>&#8288;</tt>
+  #
   def initialize(string, options=[2], entities = {})
     super string
 
     @options = [*options]
-    @entities = default_entities.update(entities)
+    @entities = default_entities
+    @entities.merge!(named_entities) if @options.include?(:named_entities)
+    @entities.merge!(entities)
   end
 
   # Apply SmartyPants transformations.
@@ -403,6 +423,21 @@ class RubyPants < String
       :html_quote         => "&quot;",
       :non_breaking_space => "&nbsp;",
       :word_joiner        => "&#8288;",
+    }
+  end
+
+  def named_entities
+    {
+      :single_left_quote  => '&lsquo;',
+      :double_left_quote  => "&ldquo;",
+      :single_right_quote => "&rsquo;",
+      :double_right_quote => "&rdquo;",
+      :em_dash            => "&mdash;",
+      :en_dash            => "&ndash;",
+      :ellipsis           => "&hellip;",
+      :html_quote         => "&quot;",
+      :non_breaking_space => "&nbsp;",
+      # :word_joiner      => N/A,
     }
   end
 
