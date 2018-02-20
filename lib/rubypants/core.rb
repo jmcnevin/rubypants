@@ -453,9 +453,9 @@ class RubyPants < String
       :en_dash            => '–', #en-dash char
       :em_dash            => '—', #em-dash char
       :ellipsis           => '…',
-      :html_quote         => "&quot;",
+      :html_quote         => "”",
       :non_breaking_space => " ", # non-breaking space char
-      :word_joiner        => "⁠", # zero-width word joiner char
+      :word_joiner        => "⁠",  # zero-width word joiner char
     }
   end
 

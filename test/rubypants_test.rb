@@ -235,4 +235,8 @@ EOF
   def test_named_entities
     assert_rp_equal "Testing 'FOO!'", "Testing &lsquo;FOO!&rsquo;", [2, :named_entities]
   end
+
+  def test_character_entities
+    assert_rp_equal "Testing 'FOO!'", "Testing ‘FOO!’", [4]
+  end
 end
