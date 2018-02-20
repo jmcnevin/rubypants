@@ -1,5 +1,5 @@
 class RubyPants < String
-
+ 
   # Create a new RubyPants instance with the text in +string+.
   #
   # Allowed elements in the options array:
@@ -446,14 +446,16 @@ class RubyPants < String
 
   def character_entities
     {
-      :en_dash            => '–',
-      :em_dash            => '—',
       :single_left_quote  => "‘",
       :single_right_quote => "’",
       :double_left_quote  => '“',
       :double_right_quote => '”',
+      :en_dash            => '–', #en-dash char
+      :em_dash            => '—', #em-dash char
       :ellipsis           => '…',
-      :non_breaking_space => " ",
+      :html_quote         => "&quot;",
+      :non_breaking_space => " ", # non-breaking space char
+      :word_joiner        => "⁠", # zero-width word joiner char
     }
   end
 
