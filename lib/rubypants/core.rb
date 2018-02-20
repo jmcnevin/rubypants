@@ -8,8 +8,8 @@ class RubyPants < String
   # 1  :: enable all, using only em-dash shortcuts
   # 2  :: enable all, using old school en- and em-dash shortcuts (*default*)
   # 3  :: enable all, using inverted old school en and em-dash shortcuts
+  # 4  :: enable all, using old school en- and em-dash shortcuts, use unicode characters
   # -1 :: stupefy (translate HTML entities to their ASCII-counterparts)
-  # -2 :: stupefy_unicode (same as stupify, but use unicode chars)
   #
   # If you don't like any of these defaults, you can pass symbols to change
   # RubyPants' behavior:
@@ -29,8 +29,6 @@ class RubyPants < String
   #                             <tt>"</tt>
   # <tt>:stupefy</tt>        :: translate RubyPants HTML entities
   #                             to their ASCII counterparts.
-  # <tt>:stupefy_unicode</tt>:: translate RubyPants HTML entities
-  #                             to their unicode counterparts.
   #
   # In addition, you can customize the HTML entities that will be injected by
   # passing in a hash for the final argument. The defaults for these entities
@@ -65,14 +63,14 @@ class RubyPants < String
     super string
 
     @options = [*options]
-    @entities = default_entities
+    @entities = options.include?(4) ? character_entities : default_entities
     @entities.merge!(named_entities) if @options.include?(:named_entities)
     @entities.merge!(entities)
   end
 
   # Apply SmartyPants transformations.
   def to_html
-    do_quotes = do_backticks = do_dashes = do_ellipses = do_stupify = do_stupefy_unicode = nil
+    do_quotes = do_backticks = do_dashes = do_ellipses = do_stupify = nil
     convert_quotes = prevent_breaks = nil
 
     if @options.include?(0)
@@ -82,7 +80,7 @@ class RubyPants < String
       # Do everything, turn all options on.
       do_quotes = do_backticks = do_ellipses = true
       do_dashes = :normal
-    elsif @options.include?(2)
+    elsif @options.any?{|option| [2, 4].include?(option)}
       # Do everything, turn all options on, use old school dash shorthand.
       do_quotes = do_backticks = do_ellipses = true
       do_dashes = :oldschool
@@ -93,8 +91,6 @@ class RubyPants < String
       do_dashes = :inverted
     elsif @options.include?(-1)
       do_stupefy = true
-    elsif @options.include?(-2)
-      do_stupefy_unicode = true
     end
 
     # Explicit flags override numeric flag groups.
@@ -108,7 +104,6 @@ class RubyPants < String
     do_ellipses    = true if @options.include?(:ellipses)
     convert_quotes = true if @options.include?(:convertquotes)
     do_stupefy     = true if @options.include?(:stupefy)
-    do_stupefy_unicode = true if @options.include(:supefy_unicode)
 
     # Parse the HTML
     tokens = tokenize
@@ -183,11 +178,8 @@ class RubyPants < String
             end
           end
 
-          if do_stupefy
-            t = stupefy_entities t
-          elsif do_stupefy_unicode
-            t = stupefy_entities_unicode t
-          end
+          
+          t = stupefy_entities t if do_stupefy
 
         end
 
@@ -390,29 +382,6 @@ class RubyPants < String
     new_str
   end
 
-  # Return the string, with each RubyPants HTML entity translated to
-  # its actual character counterpart.
-  #
-  # Note: This is not reversible (but exactly the same as in SmartyPants)
-  #
-  def stupefy_entities_unicode(str)
-    new_str = str.dup
-
-    {
-      :en_dash            => '–',
-      :em_dash            => '—',
-      :single_left_quote  => "‘",
-      :single_right_quote => "’",
-      :double_left_quote  => '“',
-      :double_right_quote => '”',
-      :ellipsis           => '…'
-    }.each do |k,v|
-      new_str.gsub!(/#{entity(k)}/, v)
-    end
-
-    new_str
-  end
-
   # Return an array of the tokens comprising the string. Each token is
   # either a tag (possibly with nested, tags contained therein, such
   # as <tt><a href="<MTFoo>"></tt>, or a run of text between
@@ -472,6 +441,19 @@ class RubyPants < String
       :html_quote         => "&quot;",
       :non_breaking_space => "&nbsp;",
       # :word_joiner      => N/A,
+    }
+  end
+
+  def character_entities
+    {
+      :en_dash            => '–',
+      :em_dash            => '—',
+      :single_left_quote  => "‘",
+      :single_right_quote => "’",
+      :double_left_quote  => '“',
+      :double_right_quote => '”',
+      :ellipsis           => '…',
+      :non_breaking_space => " ",
     }
   end
 
