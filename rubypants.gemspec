@@ -2,11 +2,11 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rubypants/version"
+require "version"
 
 Gem::Specification.new do |s|
   s.name          = 'rubypants'
-  s.version       = RubyPants::VERSION
+  s.version       = RubyPantsVersion::VERSION
   s.summary       = "RubyPants is a Ruby port of the smart-quotes library SmartyPants."
   s.description   = <<-EOF
 The original "SmartyPants" is a free web publishing plug-in for

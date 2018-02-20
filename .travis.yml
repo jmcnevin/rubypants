@@ -11,8 +11,5 @@ rvm:
 before_install:
   - gem install bundler
 
-# For now override the default `bundle exec rake` which fails because of an
-# unresolved superclass mismatch in `core.rb` vs. `version.rb`. This should
-# eventually be fixed in rubypants.
 script:
-  - rake
+  - bundle exec rake
