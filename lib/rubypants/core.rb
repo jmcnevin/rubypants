@@ -56,12 +56,20 @@ class RubyPants < String
   # <tt>:non_breaking_space</tt> :: <tt>&nbsp;</tt>
   # <tt>:word_joiner</tt>        :: <tt>&#8288;</tt>
   #
+  # If the <tt>:character_entities</tt> option is used, RubyPants will
+  # emit Unicode characters directly, rather than HTML entities. By default
+  # this excludes the space characters (non-breaking space and
+  # word-joiner). To additionally emit Unicode space characters, use the
+  # <tt>:character_spaces</tt> option.
+  #
   def initialize(string, options=[2], entities = {})
     super string
 
     @options = [*options]
     @entities = default_entities
     @entities.merge!(named_entities) if @options.include?(:named_entities)
+    @entities.merge!(character_entities) if @options.include?(:character_entities)
+    @entities.merge!(character_spaces) if @options.include?(:character_spaces)
     @entities.merge!(entities)
   end
 
@@ -434,6 +442,25 @@ class RubyPants < String
       :ellipsis           => "&hellip;",
       :non_breaking_space => "&nbsp;",
       # :word_joiner      => N/A,
+    }
+  end
+
+  def character_entities
+    {
+      :single_left_quote  => "\u2018",
+      :double_left_quote  => "\u201C",
+      :single_right_quote => "\u2019",
+      :double_right_quote => "\u201D",
+      :em_dash            => "\u2014",
+      :en_dash            => "\u2013",
+      :ellipsis           => "\u2026",
+    }
+  end
+
+  def character_spaces
+    {
+      :non_breaking_space => "\u00A0",
+      :word_joiner        => "\u2060",
     }
   end
 

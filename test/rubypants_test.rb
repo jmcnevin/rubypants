@@ -235,4 +235,11 @@ EOF
   def test_named_entities
     assert_rp_equal "Testing 'FOO!'", "Testing &lsquo;FOO!&rsquo;", [2, :named_entities]
   end
+
+  def test_character_entities
+    assert_rp_equal "Testing 'FOO!'", "Testing ‘FOO!’", [2, :character_entities]
+    assert_rp_equal "foo---bar", "foo&#8288;—bar", [2, :character_entities, :prevent_breaks]
+    assert_rp_equal "foo ---bar", "foo&nbsp;—bar", [2, :character_entities, :prevent_breaks]
+    assert_rp_equal "foo ---bar", "foo\u00A0—bar", [2, :character_entities, :character_spaces, :prevent_breaks]
+  end
 end
