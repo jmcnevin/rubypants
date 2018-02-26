@@ -40,7 +40,6 @@ class RubyPants < String
   # <tt>:em_dash</tt>            :: <tt>&#8212;</tt>
   # <tt>:en_dash</tt>            :: <tt>&#8211;</tt>
   # <tt>:ellipsis</tt>           :: <tt>&#8230;</tt>
-  # <tt>:html_quote</tt>         :: <tt>&quot;</tt>
   # <tt>:non_breaking_space</tt> :: <tt>&nbsp;</tt>
   # <tt>:word_joiner</tt>        :: <tt>&#8288;</tt>
   #
@@ -54,7 +53,6 @@ class RubyPants < String
   # <tt>:em_dash</tt>            :: <tt>&mdash;</tt>
   # <tt>:en_dash</tt>            :: <tt>&ndash;</tt>
   # <tt>:ellipsis</tt>           :: <tt>&hellip;</tt>
-  # <tt>:html_quote</tt>         :: <tt>&quot;</tt>
   # <tt>:non_breaking_space</tt> :: <tt>&nbsp;</tt>
   # <tt>:word_joiner</tt>        :: <tt>&#8288;</tt>
   #
@@ -420,7 +418,6 @@ class RubyPants < String
       :em_dash            => "&#8212;",
       :en_dash            => "&#8211;",
       :ellipsis           => "&#8230;",
-      :html_quote         => "&quot;",
       :non_breaking_space => "&nbsp;",
       :word_joiner        => "&#8288;",
     }
@@ -435,7 +432,6 @@ class RubyPants < String
       :em_dash            => "&mdash;",
       :en_dash            => "&ndash;",
       :ellipsis           => "&hellip;",
-      :html_quote         => "&quot;",
       :non_breaking_space => "&nbsp;",
       # :word_joiner      => N/A,
     }
