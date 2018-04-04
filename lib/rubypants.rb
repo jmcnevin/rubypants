@@ -70,9 +70,9 @@ class RubyPants < String
 
     @options = [*options]
     @entities = default_entities
-    @entities.merge!(named_entities) if @options.include?(:named_entities)
+    @entities.merge!(named_entities)     if @options.include?(:named_entities)
     @entities.merge!(character_entities) if @options.include?(:character_entities)
-    @entities.merge!(character_spaces) if @options.include?(:character_spaces)
+    @entities.merge!(character_spaces)   if @options.include?(:character_spaces)
     @entities.merge!(entities)
   end
 
@@ -102,16 +102,16 @@ class RubyPants < String
     end
 
     # Explicit flags override numeric flag groups.
-    do_quotes      = true if @options.include?(:quotes)
-    do_backticks   = true if @options.include?(:backticks)
-    do_backticks   = :both if @options.include?(:allbackticks)
-    do_dashes      = :normal if @options.include?(:dashes)
+    do_quotes      = true       if @options.include?(:quotes)
+    do_backticks   = true       if @options.include?(:backticks)
+    do_backticks   = :both      if @options.include?(:allbackticks)
+    do_dashes      = :normal    if @options.include?(:dashes)
     do_dashes      = :oldschool if @options.include?(:oldschool)
-    do_dashes      = :inverted if @options.include?(:inverted)
-    prevent_breaks = true if @options.include?(:prevent_breaks)
-    do_ellipses    = true if @options.include?(:ellipses)
-    convert_quotes = true if @options.include?(:convertquotes)
-    do_stupefy     = true if @options.include?(:stupefy)
+    do_dashes      = :inverted  if @options.include?(:inverted)
+    prevent_breaks = true       if @options.include?(:prevent_breaks)
+    do_ellipses    = true       if @options.include?(:ellipses)
+    convert_quotes = true       if @options.include?(:convertquotes)
+    do_stupefy     = true       if @options.include?(:stupefy)
 
     # Parse the HTML
     tokens = tokenize
@@ -149,20 +149,20 @@ class RubyPants < String
         unless in_pre
           t = process_escapes t
 
-          t.gsub!(/&quot;/, '"')  if convert_quotes
+          t.gsub!(/&quot;/, '"') if convert_quotes
 
           if do_dashes
-            t = educate_dashes t, prevent_breaks            if do_dashes == :normal
-            t = educate_dashes_oldschool t, prevent_breaks  if do_dashes == :oldschool
-            t = educate_dashes_inverted t, prevent_breaks   if do_dashes == :inverted
+            t = educate_dashes t, prevent_breaks           if do_dashes == :normal
+            t = educate_dashes_oldschool t, prevent_breaks if do_dashes == :oldschool
+            t = educate_dashes_inverted t, prevent_breaks  if do_dashes == :inverted
           end
 
-          t = educate_ellipses t, prevent_breaks  if do_ellipses
+          t = educate_ellipses t, prevent_breaks if do_ellipses
 
           # Note: backticks need to be processed before quotes.
           if do_backticks
             t = educate_backticks t
-            t = educate_single_backticks t  if do_backticks == :both
+            t = educate_single_backticks t if do_backticks == :both
           end
 
           if do_quotes
@@ -186,7 +186,7 @@ class RubyPants < String
             end
           end
 
-          t = stupefy_entities t  if do_stupefy
+          t = stupefy_entities t if do_stupefy
         end
 
         prev_token_last_char = last_char
@@ -408,7 +408,7 @@ class RubyPants < String
     prev_end = 0
 
     scan(tag_soup) do
-      tokens << [:text, $1]  if $1 != ""
+      tokens << [:text, $1] if $1 != ""
       tokens << [:tag, $2]
       prev_end = $~.end(0)
     end
