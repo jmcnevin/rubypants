@@ -312,55 +312,49 @@ class RubyPants < String
 
     str = str.dup
 
+    single_left_quote  = entity(:single_left_quote)
+    single_right_quote = entity(:single_right_quote)
+    double_left_quote  = entity(:double_left_quote)
+    double_right_quote = entity(:double_right_quote)
+
     # Special case if the very first character is a quote followed by
     # punctuation at a non-word-break. Close the quotes by brute
     # force:
-    str.gsub!(/^'(?=#{punct_class}\B)/,
-              entity(:single_right_quote))
-    str.gsub!(/^"(?=#{punct_class}\B)/,
-              entity(:double_right_quote))
+    str.gsub!(/^'(?=#{punct_class}\B)/, single_right_quote)
+    str.gsub!(/^"(?=#{punct_class}\B)/, double_right_quote)
 
     # Special case for double sets of quotes, e.g.:
     #   <p>He said, "'Quoted' words in a larger quote."</p>
-    str.gsub!(/"'(?=\w)/,
-              "#{entity(:double_left_quote)}#{entity(:single_left_quote)}")
-    str.gsub!(/'"(?=\w)/,
-              "#{entity(:single_left_quote)}#{entity(:double_left_quote)}")
+    str.gsub!(/"'(?=\w)/, "#{double_left_quote}#{single_left_quote}")
+    str.gsub!(/'"(?=\w)/, "#{single_left_quote}#{double_left_quote}")
 
     # Special case for decade abbreviations (the '80s):
-    str.gsub!(/'(?=\d\ds)/,
-              entity(:single_right_quote))
+    str.gsub!(/'(?=\d\ds)/, single_right_quote)
 
     close_class = %![^\ \t\r\n\\[\{\(\-]!
-    dec_dashes = "#{entity(:en_dash)}|#{entity(:em_dash)}"
+    dec_dashes  = "#{entity(:en_dash)}|#{entity(:em_dash)}"
 
     # Get most opening single quotes:
     str.gsub!(/([[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)'(?=\w)/,
-             '\1' + entity(:single_left_quote))
+             '\1' + single_left_quote)
 
     # Single closing quotes:
-    str.gsub!(/(#{close_class})'/,
-              '\1' + entity(:single_right_quote))
-    str.gsub!(/'(\s|s\b|$)/,
-              entity(:single_right_quote) + '\1')
+    str.gsub!(/(#{close_class})'/, '\1' + single_right_quote)
+    str.gsub!(/'(\s|s\b|$)/, single_right_quote + '\1')
 
     # Any remaining single quotes should be opening ones:
-    str.gsub!(/'/,
-              entity(:single_left_quote))
+    str.gsub!(/'/, single_left_quote)
 
     # Get most opening double quotes:
     str.gsub!(/([[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)"(?=\w)/,
-             '\1' + entity(:double_left_quote))
+             '\1' + double_left_quote)
 
     # Double closing quotes:
-    str.gsub!(/(#{close_class})"/,
-              '\1' + entity(:double_right_quote))
-    str.gsub!(/"(\s|s\b|$)/,
-              entity(:double_right_quote) + '\1')
+    str.gsub!(/(#{close_class})"/, '\1' + double_right_quote)
+    str.gsub!(/"(\s|s\b|$)/, double_right_quote + '\1')
 
     # Any remaining quotes should be opening ones:
-    str.gsub!(/"/,
-              entity(:double_left_quote))
+    str.gsub!(/"/, double_left_quote)
 
     str
   end
