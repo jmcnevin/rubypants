@@ -70,9 +70,9 @@ class RubyPants < String
 
     @options = [*options]
     @entities = default_entities
-    @entities.merge!(named_entities) if @options.include?(:named_entities)
+    @entities.merge!(named_entities)     if @options.include?(:named_entities)
     @entities.merge!(character_entities) if @options.include?(:character_entities)
-    @entities.merge!(character_spaces) if @options.include?(:character_spaces)
+    @entities.merge!(character_spaces)   if @options.include?(:character_spaces)
     @entities.merge!(entities)
   end
 
@@ -102,16 +102,16 @@ class RubyPants < String
     end
 
     # Explicit flags override numeric flag groups.
-    do_quotes      = true if @options.include?(:quotes)
-    do_backticks   = true if @options.include?(:backticks)
-    do_backticks   = :both if @options.include?(:allbackticks)
-    do_dashes      = :normal if @options.include?(:dashes)
+    do_quotes      = true       if @options.include?(:quotes)
+    do_backticks   = true       if @options.include?(:backticks)
+    do_backticks   = :both      if @options.include?(:allbackticks)
+    do_dashes      = :normal    if @options.include?(:dashes)
     do_dashes      = :oldschool if @options.include?(:oldschool)
-    do_dashes      = :inverted if @options.include?(:inverted)
-    prevent_breaks = true if @options.include?(:prevent_breaks)
-    do_ellipses    = true if @options.include?(:ellipses)
-    convert_quotes = true if @options.include?(:convertquotes)
-    do_stupefy     = true if @options.include?(:stupefy)
+    do_dashes      = :inverted  if @options.include?(:inverted)
+    prevent_breaks = true       if @options.include?(:prevent_breaks)
+    do_ellipses    = true       if @options.include?(:ellipses)
+    convert_quotes = true       if @options.include?(:convertquotes)
+    do_stupefy     = true       if @options.include?(:stupefy)
 
     # Parse the HTML
     tokens = tokenize
