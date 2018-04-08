@@ -225,8 +225,9 @@ class RubyPants < String
     /x
   end
 
-  DOUBLE_DASH = n_of(2, '-')
-  TRIPLE_DASH = n_of(3, '-')
+  DOUBLE_DASH   = n_of(2, '-')
+  TRIPLE_DASH   = n_of(3, '-')
+  TRIPLE_PERIOD = n_of(3, '.')
 
   # Return +str+ replacing all +patt+ with +repl+. If +prevent_breaks+ is true,
   # then replace spaces preceding +patt+ with a non-breaking space, and if there
@@ -282,7 +283,7 @@ class RubyPants < String
   # spaces between the dots.
   #
   def educate_ellipses(str, prevent_breaks=false)
-    str = educate(str, RubyPants.n_of(3, '.'), entity(:ellipsis), prevent_breaks)
+    str = educate(str, TRIPLE_PERIOD, entity(:ellipsis), prevent_breaks)
     educate(str, /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/,
             entity(:ellipsis), prevent_breaks)
   end
