@@ -152,7 +152,7 @@ class RubyPants < String
         unless in_pre
           t = process_escapes t
 
-          t.gsub!(/&quot;/, '"') if convert_quotes
+          t.gsub!('&quot;', '"') if convert_quotes
 
           if do_dashes
             t = educate_dashes t, prevent_breaks           if do_dashes == :normal
@@ -363,7 +363,7 @@ class RubyPants < String
               entity(:single_right_quote) + '\1')
 
     # Any remaining single quotes should be opening ones:
-    str.gsub!(/'/,
+    str.gsub!("'",
               entity(:single_left_quote))
 
     # Get most opening double quotes:
@@ -377,7 +377,7 @@ class RubyPants < String
               entity(:double_right_quote) + '\1')
 
     # Any remaining quotes should be opening ones:
-    str.gsub!(/"/,
+    str.gsub!('"',
               entity(:double_left_quote))
 
     str
@@ -400,7 +400,7 @@ class RubyPants < String
       :double_right_quote => '"',
       :ellipsis           => '...'
     }.each do |k,v|
-      new_str.gsub!(/#{entity(k)}/, v)
+      new_str.gsub!(entity(k).to_s, v)
     end
 
     new_str
