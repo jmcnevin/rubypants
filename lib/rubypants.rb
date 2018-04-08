@@ -146,12 +146,12 @@ class RubyPants < String
         # Remember last char of this token before processing.
         last_char = t[-1].chr
 
-        unless in_pre
+        if !in_pre && !t.strip.empty?
           t = process_escapes t
 
           t.gsub!(/&quot;/, '"') if convert_quotes
 
-          if do_dashes
+          if do_dashes && t.include?('--')
             t = educate_dashes t, prevent_breaks           if do_dashes == :normal
             t = educate_dashes_oldschool t, prevent_breaks if do_dashes == :oldschool
             t = educate_dashes_inverted t, prevent_breaks  if do_dashes == :inverted
@@ -160,12 +160,12 @@ class RubyPants < String
           t = educate_ellipses t, prevent_breaks if do_ellipses
 
           # Note: backticks need to be processed before quotes.
-          if do_backticks
+          if do_backticks && (t.include?('`') || t.include?("'"))
             t = educate_backticks t
             t = educate_single_backticks t if do_backticks == :both
           end
 
-          if do_quotes
+          if do_quotes && (t.include?("'") || t.include?('"'))
             if t == "'"
               # Special case: single-character ' token
               if prev_token_last_char =~ /\S/
