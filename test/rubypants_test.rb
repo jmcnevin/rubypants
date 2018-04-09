@@ -152,6 +152,28 @@ EOF
     assert_rp_equal "foo. . . .bar", 'foo. . . .bar', [:ellipses, :prevent_breaks]
     assert_rp_equal "foo . . . . bar", 'foo . . . . bar', [:ellipses, :prevent_breaks]
 
+    # dots and tab-spaces
+    assert_rp_equal "foo.	.	.bar", 'foo&#8230;bar', [:ellipses]
+    assert_rp_equal "foo	.	.	.	bar", 'foo	&#8230;	bar', [:ellipses]
+    assert_rp_equal "foo.	.	.	.bar", 'foo.	.	.	.bar', [:ellipses]
+    assert_rp_equal "foo	.	.	.	.	bar", 'foo	.	.	.	.	bar', [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo.	.	.bar", 'foo&#8288;&#8230;bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo	.	.	.	bar", 'foo&nbsp;&#8230;	bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo.	.	.	.bar", 'foo.	.	.	.bar', [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo	.	.	.	.	bar", 'foo	.	.	.	.	bar', [:ellipses, :prevent_breaks]
+
+    # dots and line-breaks
+    assert_rp_equal "foo.\n.\n.bar", 'foo&#8230;bar', [:ellipses]
+    assert_rp_equal "foo\n.\n.\n.\nbar", "foo\n&#8230;\nbar", [:ellipses]
+    assert_rp_equal "foo.\n.\n.\n.bar", "foo.\n.\n.\n.bar", [:ellipses]
+    assert_rp_equal "foo\n.\n.\n.\n.\nbar", "foo\n.\n.\n.\n.\nbar", [:ellipses]
+    # and with :prevent_breaks
+    assert_rp_equal "foo.\n.\n.bar", "foo&#8288;&#8230;bar", [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo\n.\n.\n.\nbar", "foo&nbsp;&#8230;\nbar", [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo.\n.\n.\n.bar", "foo.\n.\n.\n.bar", [:ellipses, :prevent_breaks]
+    assert_rp_equal "foo\n.\n.\n.\n.\nbar", "foo\n.\n.\n.\n.\nbar", [:ellipses, :prevent_breaks]
+
     # nasty ones
     assert_rp_equal "foo. . ..bar", 'foo. . ..bar', [:ellipses]
     assert_rp_equal "foo. . ...bar", 'foo. . &#8230;bar', [:ellipses]
