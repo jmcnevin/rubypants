@@ -280,7 +280,7 @@ class RubyPants < String
     educate(str, DOUBLE_DASH, entity(:em_dash), prevent_breaks)
   end
 
-  ELLIPSIS_PATTERN = /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/
+  SPACED_ELLIPSIS_PATTERN = /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/
 
   # Return the string, with each instance of "<tt>...</tt>" translated
   # to an ellipsis HTML entity. Also converts the case where there are
@@ -288,7 +288,7 @@ class RubyPants < String
   #
   def educate_ellipses(str, prevent_breaks=false)
     str = educate(str, RubyPants.n_of(3, '.'), entity(:ellipsis), prevent_breaks)
-    educate(str, ELLIPSIS_PATTERN,
+    educate(str, SPACED_ELLIPSIS_PATTERN,
             entity(:ellipsis), prevent_breaks)
   end
 
