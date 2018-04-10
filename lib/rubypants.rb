@@ -74,6 +74,14 @@ class RubyPants < String
     @entities.merge!(character_entities) if @options.include?(:character_entities)
     @entities.merge!(character_spaces)   if @options.include?(:character_spaces)
     @entities.merge!(entities)
+
+    @single_left_quote  = @entities[:single_left_quote]
+    @single_right_quote = @entities[:single_right_quote]
+    @double_left_quote  = @entities[:double_left_quote]
+    @double_right_quote = @entities[:double_right_quote]
+    @ellipsis           = @entities[:ellipsis]
+    @em_dash            = @entities[:em_dash]
+    @en_dash            = @entities[:en_dash]
   end
 
   SPECIAL_HTML_TAGS = %r!\A<(/?)(pre|code|kbd|script|style|math)[\s>]!
@@ -172,16 +180,16 @@ class RubyPants < String
             if t == "'"
               # Special case: single-character ' token
               if prev_token_last_char =~ NON_WHITESPACE_CHARS
-                t = entity(:single_right_quote)
+                t = @single_right_quote
               else
-                t = entity(:single_left_quote)
+                t = @single_left_quote
               end
             elsif t == '"'
               # Special case: single-character " token
               if prev_token_last_char =~ NON_WHITESPACE_CHARS
-                t = entity(:double_right_quote)
+                t = @double_right_quote
               else
-                t = entity(:double_left_quote)
+                t = @double_left_quote
               end
             else
               # Normal case:
@@ -254,7 +262,7 @@ class RubyPants < String
   # em-dash HTML entity.
   #
   def educate_dashes(str, prevent_breaks=false)
-    educate(str, DOUBLE_DASH, entity(:em_dash), prevent_breaks)
+    educate(str, DOUBLE_DASH, @em_dash, prevent_breaks)
   end
 
   # Return the string, with each instance of "<tt>--</tt>" translated to an
@@ -262,8 +270,8 @@ class RubyPants < String
   # em-dash HTML entity.
   #
   def educate_dashes_oldschool(str, prevent_breaks=false)
-    str = educate(str, TRIPLE_DASH, entity(:em_dash), prevent_breaks)
-    educate(str, DOUBLE_DASH, entity(:en_dash), prevent_breaks)
+    str = educate(str, TRIPLE_DASH, @em_dash, prevent_breaks)
+    educate(str, DOUBLE_DASH, @en_dash, prevent_breaks)
   end
 
   # Return the string, with each instance of "<tt>--</tt>" translated
@@ -277,8 +285,8 @@ class RubyPants < String
   # Aaron Swartz for the idea.)
   #
   def educate_dashes_inverted(str, prevent_breaks=false)
-    str = educate(str, TRIPLE_DASH, entity(:en_dash), prevent_breaks)
-    educate(str, DOUBLE_DASH, entity(:em_dash), prevent_breaks)
+    str = educate(str, TRIPLE_DASH, @en_dash, prevent_breaks)
+    educate(str, DOUBLE_DASH, @em_dash, prevent_breaks)
   end
 
   SPACED_ELLIPSIS_PATTERN = /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/
@@ -288,9 +296,9 @@ class RubyPants < String
   # spaces between the dots.
   #
   def educate_ellipses(str, prevent_breaks=false)
-    str = educate(str, TRIPLE_DOTS, entity(:ellipsis), prevent_breaks)
+    str = educate(str, TRIPLE_DOTS, @ellipsis, prevent_breaks)
     educate(str, SPACED_ELLIPSIS_PATTERN,
-            entity(:ellipsis), prevent_breaks)
+            @ellipsis, prevent_breaks)
   end
 
   # Return the string, with "<tt>``backticks''</tt>"-style single quotes
@@ -298,8 +306,8 @@ class RubyPants < String
   #
   def educate_backticks(str)
     str.
-      gsub("``", entity(:double_left_quote)).
-      gsub("''", entity(:double_right_quote))
+      gsub("``", @double_left_quote).
+      gsub("''", @double_right_quote)
   end
 
   # Return the string, with "<tt>`backticks'</tt>"-style single quotes
@@ -307,8 +315,8 @@ class RubyPants < String
   #
   def educate_single_backticks(str)
     str.
-      gsub("`", entity(:single_left_quote)).
-      gsub("'", entity(:single_right_quote))
+      gsub("`", @single_left_quote).
+      gsub("'", @single_right_quote)
   end
 
   PUNCT_CLASS = '[!"#\$\%\'()*+,\-.\/:;<=>?\@\[\\\\\]\^_`{|}~]'.freeze
@@ -335,51 +343,51 @@ class RubyPants < String
     # punctuation at a non-word-break. Close the quotes by brute
     # force:
     str.gsub!(SNGL_QUOT_PUNCT_CASE,
-              entity(:single_right_quote))
+              @single_right_quote)
     str.gsub!(DBLE_QUOT_PUNCT_CASE,
-              entity(:double_right_quote))
+              @double_right_quote)
 
     # Special case for double sets of quotes, e.g.:
     #   <p>He said, "'Quoted' words in a larger quote."</p>
     str.gsub!(STARTS_MIXED_QUOTS_WITH_DBLE,
-              "#{entity(:double_left_quote)}#{entity(:single_left_quote)}")
+              "#{@double_left_quote}#{@single_left_quote}")
     str.gsub!(STARTS_MIXED_QUOTS_WITH_SNGL,
-              "#{entity(:single_left_quote)}#{entity(:double_left_quote)}")
+              "#{@single_left_quote}#{@double_left_quote}")
 
     # Special case for decade abbreviations (the '80s):
     str.gsub!(DECADE_ABBR_CASE,
-              entity(:single_right_quote))
+              @single_right_quote)
 
-    dec_dashes = "#{entity(:en_dash)}|#{entity(:em_dash)}"
+    dec_dashes = "#{@en_dash}|#{@em_dash}"
     quote_precedent = "[[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];"
 
     # Get most opening single quotes:
     str.gsub!(/(#{quote_precedent})'(?=\w)/,
-             '\1' + entity(:single_left_quote))
+             '\1' + @single_left_quote)
 
     # Single closing quotes:
     str.gsub!(CHAR_LEADS_SNGL_QUOTE,
-              '\1' + entity(:single_right_quote))
+              '\1' + @single_right_quote)
     str.gsub!(WHITESPACE_TRAILS_SNGL_QUOTE,
-              entity(:single_right_quote) + '\1')
+              @single_right_quote + '\1')
 
     # Any remaining single quotes should be opening ones:
     str.gsub!("'",
-              entity(:single_left_quote))
+              @single_left_quote)
 
     # Get most opening double quotes:
     str.gsub!(/(#{quote_precedent})"(?=\w)/,
-             '\1' + entity(:double_left_quote))
+             '\1' + @double_left_quote)
 
     # Double closing quotes:
     str.gsub!(CHAR_LEADS_DBLE_QUOTE,
-              '\1' + entity(:double_right_quote))
+              '\1' + @double_right_quote)
     str.gsub!(WHITESPACE_TRAILS_DBLE_QUOTE,
-              entity(:double_right_quote) + '\1')
+              @double_right_quote + '\1')
 
     # Any remaining quotes should be opening ones:
     str.gsub!('"',
-              entity(:double_left_quote))
+              @double_left_quote)
 
     str
   end
