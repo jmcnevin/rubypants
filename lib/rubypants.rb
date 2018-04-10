@@ -76,6 +76,9 @@ class RubyPants < String
     @entities.merge!(entities)
   end
 
+  SPECIAL_HTML_TAGS = %r!\A<(/?)(pre|code|kbd|script|style|math)[\s>]!
+  NON_WHITESPACE_CHARS = /\S/
+
   # Apply SmartyPants transformations.
   def to_html
     do_quotes = do_backticks = do_dashes = do_ellipses = do_stupify = nil
@@ -133,7 +136,7 @@ class RubyPants < String
         result << token[1]
         if token[1].end_with? '/>'
           # ignore self-closing tags
-        elsif token[1] =~ %r!\A<(/?)(pre|code|kbd|script|style|math)[\s>]!
+        elsif token[1] =~ SPECIAL_HTML_TAGS
           if $1 == '' && ! in_pre
             in_pre = $2
           elsif $1 == '/' && $2 == in_pre
@@ -149,7 +152,7 @@ class RubyPants < String
         unless in_pre
           t = process_escapes t
 
-          t.gsub!(/&quot;/, '"') if convert_quotes
+          t.gsub!('&quot;', '"') if convert_quotes
 
           if do_dashes
             t = educate_dashes t, prevent_breaks           if do_dashes == :normal
@@ -168,14 +171,14 @@ class RubyPants < String
           if do_quotes
             if t == "'"
               # Special case: single-character ' token
-              if prev_token_last_char =~ /\S/
+              if prev_token_last_char =~ NON_WHITESPACE_CHARS
                 t = entity(:single_right_quote)
               else
                 t = entity(:single_left_quote)
               end
             elsif t == '"'
               # Special case: single-character " token
-              if prev_token_last_char =~ /\S/
+              if prev_token_last_char =~ NON_WHITESPACE_CHARS
                 t = entity(:double_right_quote)
               else
                 t = entity(:double_left_quote)
@@ -225,9 +228,9 @@ class RubyPants < String
     /x
   end
 
-  DOUBLE_DASH   = n_of(2, '-')
-  TRIPLE_DASH   = n_of(3, '-')
-  TRIPLE_PERIOD = n_of(3, '.')
+  DOUBLE_DASH = n_of(2, '-')
+  TRIPLE_DASH = n_of(3, '-')
+  TRIPLE_DOTS = n_of(3, '.')
 
   # Return +str+ replacing all +patt+ with +repl+. If +prevent_breaks+ is true,
   # then replace spaces preceding +patt+ with a non-breaking space, and if there
@@ -278,13 +281,15 @@ class RubyPants < String
     educate(str, DOUBLE_DASH, entity(:em_dash), prevent_breaks)
   end
 
+  SPACED_ELLIPSIS_PATTERN = /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/
+
   # Return the string, with each instance of "<tt>...</tt>" translated
   # to an ellipsis HTML entity. Also converts the case where there are
   # spaces between the dots.
   #
   def educate_ellipses(str, prevent_breaks=false)
-    str = educate(str, TRIPLE_PERIOD, entity(:ellipsis), prevent_breaks)
-    educate(str, /(?<!\.|\.[[:space:]])\.[[:space:]]\.[[:space:]]\.(?!\.|[[:space:]]\.)/,
+    str = educate(str, TRIPLE_DOTS, entity(:ellipsis), prevent_breaks)
+    educate(str, SPACED_ELLIPSIS_PATTERN,
             entity(:ellipsis), prevent_breaks)
   end
 
@@ -306,61 +311,74 @@ class RubyPants < String
       gsub("'", entity(:single_right_quote))
   end
 
+  PUNCT_CLASS = '[!"#\$\%\'()*+,\-.\/:;<=>?\@\[\\\\\]\^_`{|}~]'.freeze
+  SNGL_QUOT_PUNCT_CASE = /^'(?=#{PUNCT_CLASS}\B)/
+  DBLE_QUOT_PUNCT_CASE = /^"(?=#{PUNCT_CLASS}\B)/
+
+  STARTS_MIXED_QUOTS_WITH_SNGL = /'"(?=\w)/
+  STARTS_MIXED_QUOTS_WITH_DBLE = /"'(?=\w)/
+
+  DECADE_ABBR_CASE = /'(?=\d\ds)/
+
+  CLOSE_CLASS = '[^\ \t\r\n\\[\{\(\-]'.freeze
+  CHAR_LEADS_SNGL_QUOTE = /(#{CLOSE_CLASS})'/
+  WHITESPACE_TRAILS_SNGL_QUOTE = /'(\s|s\b|$)/
+  CHAR_LEADS_DBLE_QUOTE = /(#{CLOSE_CLASS})"/
+  WHITESPACE_TRAILS_DBLE_QUOTE = /"(\s|s\b|$)/
+
   # Return the string, with "educated" curly quote HTML entities.
   #
   def educate_quotes(str)
-    punct_class = '[!"#\$\%\'()*+,\-.\/:;<=>?\@\[\\\\\]\^_`{|}~]'
-
     str = str.dup
 
     # Special case if the very first character is a quote followed by
     # punctuation at a non-word-break. Close the quotes by brute
     # force:
-    str.gsub!(/^'(?=#{punct_class}\B)/,
+    str.gsub!(SNGL_QUOT_PUNCT_CASE,
               entity(:single_right_quote))
-    str.gsub!(/^"(?=#{punct_class}\B)/,
+    str.gsub!(DBLE_QUOT_PUNCT_CASE,
               entity(:double_right_quote))
 
     # Special case for double sets of quotes, e.g.:
     #   <p>He said, "'Quoted' words in a larger quote."</p>
-    str.gsub!(/"'(?=\w)/,
+    str.gsub!(STARTS_MIXED_QUOTS_WITH_DBLE,
               "#{entity(:double_left_quote)}#{entity(:single_left_quote)}")
-    str.gsub!(/'"(?=\w)/,
+    str.gsub!(STARTS_MIXED_QUOTS_WITH_SNGL,
               "#{entity(:single_left_quote)}#{entity(:double_left_quote)}")
 
     # Special case for decade abbreviations (the '80s):
-    str.gsub!(/'(?=\d\ds)/,
+    str.gsub!(DECADE_ABBR_CASE,
               entity(:single_right_quote))
 
-    close_class = %![^\ \t\r\n\\[\{\(\-]!
     dec_dashes = "#{entity(:en_dash)}|#{entity(:em_dash)}"
+    quote_precedent = "[[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];"
 
     # Get most opening single quotes:
-    str.gsub!(/([[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)'(?=\w)/,
+    str.gsub!(/(#{quote_precedent})'(?=\w)/,
              '\1' + entity(:single_left_quote))
 
     # Single closing quotes:
-    str.gsub!(/(#{close_class})'/,
+    str.gsub!(CHAR_LEADS_SNGL_QUOTE,
               '\1' + entity(:single_right_quote))
-    str.gsub!(/'(\s|s\b|$)/,
+    str.gsub!(WHITESPACE_TRAILS_SNGL_QUOTE,
               entity(:single_right_quote) + '\1')
 
     # Any remaining single quotes should be opening ones:
-    str.gsub!(/'/,
+    str.gsub!("'",
               entity(:single_left_quote))
 
     # Get most opening double quotes:
-    str.gsub!(/([[:space:]]|&nbsp;|--|&[mn]dash;|#{dec_dashes}|&#x201[34];)"(?=\w)/,
+    str.gsub!(/(#{quote_precedent})"(?=\w)/,
              '\1' + entity(:double_left_quote))
 
     # Double closing quotes:
-    str.gsub!(/(#{close_class})"/,
+    str.gsub!(CHAR_LEADS_DBLE_QUOTE,
               '\1' + entity(:double_right_quote))
-    str.gsub!(/"(\s|s\b|$)/,
+    str.gsub!(WHITESPACE_TRAILS_DBLE_QUOTE,
               entity(:double_right_quote) + '\1')
 
     # Any remaining quotes should be opening ones:
-    str.gsub!(/"/,
+    str.gsub!('"',
               entity(:double_left_quote))
 
     str
@@ -383,11 +401,13 @@ class RubyPants < String
       :double_right_quote => '"',
       :ellipsis           => '...'
     }.each do |k,v|
-      new_str.gsub!(/#{entity(k)}/, v)
+      new_str.gsub!(entity(k).to_s, v)
     end
 
     new_str
   end
+
+  TAG_SOUP = /([^<]*)(<!--.*?-->|<[^>]*>)/m
 
   # Return an array of the tokens comprising the string. Each token is
   # either a tag (possibly with nested, tags contained therein, such
@@ -402,13 +422,11 @@ class RubyPants < String
   # Chad Miller in the Python port of SmartyPants.
   #
   def tokenize
-    tag_soup = /([^<]*)(<!--.*?-->|<[^>]*>)/m
-
     tokens = []
 
     prev_end = 0
 
-    scan(tag_soup) do
+    scan(TAG_SOUP) do
       tokens << [:text, $1] if $1 != ""
       tokens << [:tag, $2]
       prev_end = $~.end(0)
