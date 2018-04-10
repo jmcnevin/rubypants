@@ -157,7 +157,9 @@ class RubyPants < String
             t = educate_dashes_inverted t, prevent_breaks  if do_dashes == :inverted
           end
 
-          t = educate_ellipses t, prevent_breaks if do_ellipses
+          if do_ellipses && (t.include?('...') || t.include?('. . .'))
+            t = educate_ellipses t, prevent_breaks
+          end
 
           # Note: backticks need to be processed before quotes.
           if do_backticks && (t.include?('`') || t.include?("'"))
