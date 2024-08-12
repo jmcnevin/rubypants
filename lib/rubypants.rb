@@ -131,7 +131,7 @@ class RubyPants < String
     in_pre = nil
 
     # Here is the result stored in.
-    result = ""
+    result = +""
 
     # This is a cheat, used to get some context for one-character
     # tokens that consist of just a quote char. What we do is remember
